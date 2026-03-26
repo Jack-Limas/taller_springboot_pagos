@@ -2,38 +2,27 @@ package co.ucc.apppedidos.model;
 
 public class Producto {
 
-    private Long id;
+    private Long idProducto;
     private String nombre;
     private double precio;
     private int stock;
 
-    // Constructor vacío
-    public Producto() {}
+    public Producto() {
+    }
 
-    // Constructor con parámetros
-    public Producto(Long id, String nombre, double precio, int stock) {
-        this.id = id;
+    public Producto(Long idProducto, String nombre, double precio, int stock) {
+        this.idProducto = idProducto;
         this.nombre = nombre;
         this.precio = precio;
         this.stock = stock;
     }
 
-    // MÉTODO DE NEGOCIO
-    public void reducirStock(int cantidad) {
-        if (cantidad > stock) {
-            throw new RuntimeException("Stock insuficiente");
-        }
-        this.stock -= cantidad;
+    public Long getIdProducto() {
+        return idProducto;
     }
 
-    // Getters y Setters
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public void setIdProducto(Long idProducto) {
+        this.idProducto = idProducto;
     }
 
     public String getNombre() {

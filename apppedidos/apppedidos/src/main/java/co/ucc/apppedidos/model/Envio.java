@@ -1,36 +1,42 @@
 package co.ucc.apppedidos.model;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import java.util.Date;
 
-public class Envio {
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "tipoEnvio")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = EnvioEstandar.class, name = "ESTANDAR"),
+        @JsonSubTypes.Type(value = EnvioExpress.class, name = "EXPRESS"),
+        @JsonSubTypes.Type(value = EnvioInternacional.class, name = "INTERNACIONAL"),
+        @JsonSubTypes.Type(value = EnvioDron.class, name = "DRON")
+})
+public abstract class Envio {
 
     private Long idEnvio;
-    private Factura factura;
-    private Distribuidor distribuidor;
-    private Vehiculo vehiculo;
     private Date fechaEnvio;
-    private String estado; // En preparación, En camino, Entregado
+    private String estado;
+    private Pedido pedido;
+    private Distribuidor distribuidor;
+    private String codigoRastreo;
+    private double peso;
+    private double volumen;
 
     public Envio() {
-        this.fechaEnvio = new Date();
-        this.estado = "En preparación";
     }
 
-    public Envio(Long idEnvio, Factura factura, Distribuidor distribuidor, Vehiculo vehiculo) {
+    public Envio(Long idEnvio, Date fechaEnvio, String estado, Pedido pedido, Distribuidor distribuidor,
+                 String codigoRastreo, double peso, double volumen) {
         this.idEnvio = idEnvio;
-        this.factura = factura;
+        this.fechaEnvio = fechaEnvio;
+        this.estado = estado;
+        this.pedido = pedido;
         this.distribuidor = distribuidor;
-        this.vehiculo = vehiculo;
-        this.fechaEnvio = new Date();
-        this.estado = "En preparación";
+        this.codigoRastreo = codigoRastreo;
+        this.peso = peso;
+        this.volumen = volumen;
     }
-
-    // Cambiar estado
-    public void actualizarEstado(String nuevoEstado) {
-        this.estado = nuevoEstado;
-    }
-
-    // Getters y Setters
 
     public Long getIdEnvio() {
         return idEnvio;
@@ -40,12 +46,28 @@ public class Envio {
         this.idEnvio = idEnvio;
     }
 
-    public Factura getFactura() {
-        return factura;
+    public Date getFechaEnvio() {
+        return fechaEnvio;
     }
 
-    public void setFactura(Factura factura) {
-        this.factura = factura;
+    public void setFechaEnvio(Date fechaEnvio) {
+        this.fechaEnvio = fechaEnvio;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public Pedido getPedido() {
+        return pedido;
+    }
+
+    public void setPedido(Pedido pedido) {
+        this.pedido = pedido;
     }
 
     public Distribuidor getDistribuidor() {
@@ -56,19 +78,29 @@ public class Envio {
         this.distribuidor = distribuidor;
     }
 
-    public Vehiculo getVehiculo() {
-        return vehiculo;
+    public String getCodigoRastreo() {
+        return codigoRastreo;
     }
 
-    public void setVehiculo(Vehiculo vehiculo) {
-        this.vehiculo = vehiculo;
+    public void setCodigoRastreo(String codigoRastreo) {
+        this.codigoRastreo = codigoRastreo;
     }
 
-    public Date getFechaEnvio() {
-        return fechaEnvio;
+    public double getPeso() {
+        return peso;
     }
 
-    public String getEstado() {
-        return estado;
+    public void setPeso(double peso) {
+        this.peso = peso;
     }
+
+    public double getVolumen() {
+        return volumen;
+    }
+
+    public void setVolumen(double volumen) {
+        this.volumen = volumen;
+    }
+
+    public abstract double calcularCosto();
 }

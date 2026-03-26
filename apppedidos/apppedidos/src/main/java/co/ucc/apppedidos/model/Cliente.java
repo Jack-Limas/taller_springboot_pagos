@@ -2,30 +2,27 @@ package co.ucc.apppedidos.model;
 
 public class Cliente {
 
-    private Long id;
+    private Long idCliente;
     private String nombre;
     private String direccion;
     private String telefono;
 
-    // Constructor vacío (OBLIGATORIO para Spring)
-    public Cliente() {}
+    public Cliente() {
+    }
 
-    // Constructor con parámetros
-    public Cliente(Long id, String nombre, String direccion, String telefono) {
-        this.id = id;
+    public Cliente(Long idCliente, String nombre, String direccion, String telefono) {
+        this.idCliente = idCliente;
         this.nombre = nombre;
         this.direccion = direccion;
         this.telefono = telefono;
     }
 
-    // Getters y Setters
-
-    public Long getId() {
-        return id;
+    public Long getIdCliente() {
+        return idCliente;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setIdCliente(Long idCliente) {
+        this.idCliente = idCliente;
     }
 
     public String getNombre() {

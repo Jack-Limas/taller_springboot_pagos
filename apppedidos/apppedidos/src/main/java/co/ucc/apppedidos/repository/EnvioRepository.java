@@ -5,25 +5,36 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 @Repository
 public class EnvioRepository {
 
-    private List<Envio> envios = new ArrayList<>();
+    private final List<Envio> envios = new ArrayList<>();
 
     public List<Envio> listar() {
-        return envios;
+        return new ArrayList<>(envios);
     }
 
     public Envio guardar(Envio envio) {
+        if (envio.getIdEnvio() != null) {
+            envios.removeIf(actual -> Objects.equals(actual.getIdEnvio(), envio.getIdEnvio()));
+        }
         envios.add(envio);
         return envio;
     }
 
-    public Optional<Envio> buscarPorId(Long id) {
+    public Envio buscarPorId(Long idEnvio) {
         return envios.stream()
-                .filter(e -> e.getIdEnvio().equals(id))
-                .findFirst();
+                .filter(envio -> Objects.equals(envio.getIdEnvio(), idEnvio))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public Envio buscarPorPedido(Long idPedido) {
+        return envios.stream()
+                .filter(envio -> envio.getPedido() != null && Objects.equals(envio.getPedido().getIdPedido(), idPedido))
+                .findFirst()
+                .orElse(null);
     }
 }

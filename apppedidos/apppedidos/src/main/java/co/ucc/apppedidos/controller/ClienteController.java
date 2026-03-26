@@ -1,8 +1,14 @@
 package co.ucc.apppedidos.controller;
 
 import co.ucc.apppedidos.model.Cliente;
-import co.ucc.apppedidos.services.IClienteService;
-import org.springframework.web.bind.annotation.*;
+import co.ucc.apppedidos.service.ClienteService;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -10,29 +16,29 @@ import java.util.List;
 @RequestMapping("/clientes")
 public class ClienteController {
 
-    private final IClienteService service;
+    private final ClienteService clienteService;
 
-    public ClienteController(IClienteService service) {
-        this.service = service;
+    public ClienteController(ClienteService clienteService) {
+        this.clienteService = clienteService;
     }
 
     @GetMapping
-    public List<Cliente> listar() {
-        return service.listar();
+    public List<Cliente> listarClientes() {
+        return clienteService.listarClientes();
     }
 
     @PostMapping
-    public Cliente guardar(@RequestBody Cliente cliente) {
-        return service.guardar(cliente);
+    public Cliente crearCliente(@RequestBody Cliente cliente) {
+        return clienteService.crearCliente(cliente);
     }
 
     @GetMapping("/{id}")
-    public Cliente buscar(@PathVariable Long id) {
-        return service.buscarPorId(id);
+    public Cliente buscarCliente(@PathVariable("id") Long idCliente) {
+        return clienteService.buscarCliente(idCliente);
     }
 
     @DeleteMapping("/{id}")
-    public void eliminar(@PathVariable Long id) {
-        service.eliminar(id);
+    public void eliminarCliente(@PathVariable("id") Long idCliente) {
+        clienteService.eliminarCliente(idCliente);
     }
 }

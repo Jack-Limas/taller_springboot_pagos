@@ -6,22 +6,18 @@ public class Proveedor {
     private String nombre;
     private String telefono;
     private String direccion;
+    private String email;
 
-    public Proveedor() {}
+    public Proveedor() {
+    }
 
-    public Proveedor(Long idProveedor, String nombre, String telefono, String direccion) {
+    public Proveedor(Long idProveedor, String nombre, String telefono, String direccion, String email) {
         this.idProveedor = idProveedor;
         this.nombre = nombre;
         this.telefono = telefono;
         this.direccion = direccion;
+        this.email = email;
     }
-
-    // Método de negocio
-    public void suministrarProducto(Producto producto, int cantidad) {
-        producto.setStock(producto.getStock() + cantidad);
-    }
-
-    // Getters y Setters
 
     public Long getIdProveedor() {
         return idProveedor;
@@ -53,5 +49,13 @@ public class Proveedor {
 
     public void setDireccion(String direccion) {
         this.direccion = direccion;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

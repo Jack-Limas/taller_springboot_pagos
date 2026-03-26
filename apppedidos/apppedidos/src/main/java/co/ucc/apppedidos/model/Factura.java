@@ -1,31 +1,26 @@
 package co.ucc.apppedidos.model;
 
 import java.util.Date;
+import java.util.List;
 
 public class Factura {
 
     private Long idFactura;
-    private String numeroFactura;
     private Date fecha;
-    private Venta venta;
+    private double total;
+    private Pedido pedido;
+    private List<DetalleFactura> detalles;
 
     public Factura() {
-        this.fecha = new Date();
     }
 
-    public Factura(Long idFactura, String numeroFactura, Venta venta) {
+    public Factura(Long idFactura, Date fecha, double total, Pedido pedido, List<DetalleFactura> detalles) {
         this.idFactura = idFactura;
-        this.numeroFactura = numeroFactura;
-        this.venta = venta;
-        this.fecha = new Date();
+        this.fecha = fecha;
+        this.total = total;
+        this.pedido = pedido;
+        this.detalles = detalles;
     }
-
-    // Obtener total desde la venta
-    public double obtenerTotal() {
-        return venta != null ? venta.getTotal() : 0;
-    }
-
-    // Getters y Setters
 
     public Long getIdFactura() {
         return idFactura;
@@ -35,23 +30,35 @@ public class Factura {
         this.idFactura = idFactura;
     }
 
-    public String getNumeroFactura() {
-        return numeroFactura;
-    }
-
-    public void setNumeroFactura(String numeroFactura) {
-        this.numeroFactura = numeroFactura;
-    }
-
     public Date getFecha() {
         return fecha;
     }
 
-    public Venta getVenta() {
-        return venta;
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
     }
 
-    public void setVenta(Venta venta) {
-        this.venta = venta;
+    public double getTotal() {
+        return total;
+    }
+
+    public void setTotal(double total) {
+        this.total = total;
+    }
+
+    public Pedido getPedido() {
+        return pedido;
+    }
+
+    public void setPedido(Pedido pedido) {
+        this.pedido = pedido;
+    }
+
+    public List<DetalleFactura> getDetalles() {
+        return detalles;
+    }
+
+    public void setDetalles(List<DetalleFactura> detalles) {
+        this.detalles = detalles;
     }
 }

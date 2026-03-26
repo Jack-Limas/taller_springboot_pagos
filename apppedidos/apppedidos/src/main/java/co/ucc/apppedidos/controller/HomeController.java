@@ -8,6 +8,6 @@ public class HomeController {
 
     @GetMapping("/")
     public String inicio() {
-        return "🚀 API de Pedidos funcionando correctamente";
+        return "API de Pedidos funcionando correctamente";
     }
 }

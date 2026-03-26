@@ -5,29 +5,33 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 @Repository
 public class ProductoRepository {
 
-    private List<Producto> productos = new ArrayList<>();
+    private final List<Producto> productos = new ArrayList<>();
 
     public List<Producto> listar() {
-        return productos;
+        return new ArrayList<>(productos);
     }
 
     public Producto guardar(Producto producto) {
+        if (producto.getIdProducto() != null) {
+            eliminar(producto.getIdProducto());
+        }
         productos.add(producto);
         return producto;
     }
 
-    public Optional<Producto> buscarPorId(Long id) {
+    public Producto buscarPorId(Long idProducto) {
         return productos.stream()
-                .filter(p -> p.getId().equals(id))
-                .findFirst();
+                .filter(producto -> Objects.equals(producto.getIdProducto(), idProducto))
+                .findFirst()
+                .orElse(null);
     }
 
-    public void eliminar(Long id) {
-        productos.removeIf(p -> p.getId().equals(id));
+    public void eliminar(Long idProducto) {
+        productos.removeIf(producto -> Objects.equals(producto.getIdProducto(), idProducto));
     }
 }

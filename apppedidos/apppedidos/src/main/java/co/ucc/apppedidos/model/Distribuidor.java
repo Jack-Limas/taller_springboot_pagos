@@ -4,19 +4,18 @@ public class Distribuidor {
 
     private Long idDistribuidor;
     private String nombre;
-    private String telefono;
-    private Vehiculo vehiculo; // Vehículo asignado
+    private String tipo;
+    private String contacto;
 
-    public Distribuidor() {}
-
-    public Distribuidor(Long idDistribuidor, String nombre, String telefono, Vehiculo vehiculo) {
-        this.idDistribuidor = idDistribuidor;
-        this.nombre = nombre;
-        this.telefono = telefono;
-        this.vehiculo = vehiculo;
+    public Distribuidor() {
     }
 
-    // Getters y Setters
+    public Distribuidor(Long idDistribuidor, String nombre, String tipo, String contacto) {
+        this.idDistribuidor = idDistribuidor;
+        this.nombre = nombre;
+        this.tipo = tipo;
+        this.contacto = contacto;
+    }
 
     public Long getIdDistribuidor() {
         return idDistribuidor;
@@ -34,19 +33,19 @@ public class Distribuidor {
         this.nombre = nombre;
     }
 
-    public String getTelefono() {
-        return telefono;
+    public String getTipo() {
+        return tipo;
     }
 
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
-    public Vehiculo getVehiculo() {
-        return vehiculo;
+    public String getContacto() {
+        return contacto;
     }
 
-    public void setVehiculo(Vehiculo vehiculo) {
-        this.vehiculo = vehiculo;
+    public void setContacto(String contacto) {
+        this.contacto = contacto;
     }
 }

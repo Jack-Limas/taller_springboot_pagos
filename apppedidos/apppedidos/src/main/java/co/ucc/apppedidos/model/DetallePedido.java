@@ -1,30 +1,30 @@
 package co.ucc.apppedidos.model;
 
-public class DetalleFactura {
+public class DetallePedido {
 
-    private Long idDetalleFactura;
+    private Long idDetalle;
     private int cantidad;
     private double precioUnitario;
     private double subtotal;
     private Producto producto;
 
-    public DetalleFactura() {
+    public DetallePedido() {
     }
 
-    public DetalleFactura(Long idDetalleFactura, int cantidad, double precioUnitario, double subtotal, Producto producto) {
-        this.idDetalleFactura = idDetalleFactura;
+    public DetallePedido(Long idDetalle, int cantidad, double precioUnitario, double subtotal, Producto producto) {
+        this.idDetalle = idDetalle;
         this.cantidad = cantidad;
         this.precioUnitario = precioUnitario;
         this.subtotal = subtotal;
         this.producto = producto;
     }
 
-    public Long getIdDetalleFactura() {
-        return idDetalleFactura;
+    public Long getIdDetalle() {
+        return idDetalle;
     }
 
-    public void setIdDetalleFactura(Long idDetalleFactura) {
-        this.idDetalleFactura = idDetalleFactura;
+    public void setIdDetalle(Long idDetalle) {
+        this.idDetalle = idDetalle;
     }
 
     public int getCantidad() {

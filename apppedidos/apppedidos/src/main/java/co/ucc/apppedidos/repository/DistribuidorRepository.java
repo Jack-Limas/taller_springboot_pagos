@@ -5,25 +5,29 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 @Repository
 public class DistribuidorRepository {
 
-    private List<Distribuidor> distribuidores = new ArrayList<>();
+    private final List<Distribuidor> distribuidores = new ArrayList<>();
 
     public List<Distribuidor> listar() {
-        return distribuidores;
+        return new ArrayList<>(distribuidores);
     }
 
     public Distribuidor guardar(Distribuidor distribuidor) {
+        if (distribuidor.getIdDistribuidor() != null) {
+            distribuidores.removeIf(actual -> Objects.equals(actual.getIdDistribuidor(), distribuidor.getIdDistribuidor()));
+        }
         distribuidores.add(distribuidor);
         return distribuidor;
     }
 
-    public Optional<Distribuidor> buscarPorId(Long id) {
+    public Distribuidor buscarPorId(Long idDistribuidor) {
         return distribuidores.stream()
-                .filter(d -> d.getIdDistribuidor().equals(id))
-                .findFirst();
+                .filter(distribuidor -> Objects.equals(distribuidor.getIdDistribuidor(), idDistribuidor))
+                .findFirst()
+                .orElse(null);
     }
 }

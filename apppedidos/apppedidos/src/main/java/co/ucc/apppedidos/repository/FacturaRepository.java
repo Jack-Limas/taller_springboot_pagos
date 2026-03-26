@@ -5,25 +5,36 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 @Repository
 public class FacturaRepository {
 
-    private List<Factura> facturas = new ArrayList<>();
+    private final List<Factura> facturas = new ArrayList<>();
 
     public List<Factura> listar() {
-        return facturas;
+        return new ArrayList<>(facturas);
     }
 
     public Factura guardar(Factura factura) {
+        if (factura.getIdFactura() != null) {
+            facturas.removeIf(actual -> Objects.equals(actual.getIdFactura(), factura.getIdFactura()));
+        }
         facturas.add(factura);
         return factura;
     }
 
-    public Optional<Factura> buscarPorId(Long id) {
+    public Factura buscarPorId(Long idFactura) {
         return facturas.stream()
-                .filter(f -> f.getIdFactura().equals(id))
-                .findFirst();
+                .filter(factura -> Objects.equals(factura.getIdFactura(), idFactura))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public Factura buscarPorPedido(Long idPedido) {
+        return facturas.stream()
+                .filter(factura -> factura.getPedido() != null && Objects.equals(factura.getPedido().getIdPedido(), idPedido))
+                .findFirst()
+                .orElse(null);
     }
 }
