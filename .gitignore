@@ -1,0 +1,53 @@
+# Java and Spring Boot
+**/target/
+**/*.class
+**/*.log
+logs/
+
+# Local Spring configuration
+**/src/main/resources/application-local.properties
+**/src/main/resources/application-dev.properties
+**/src/main/resources/application-prod.properties
+**/src/main/resources/application-secrets.properties
+
+# IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.settings/
+.classpath
+.project
+.factorypath
+.springBeans
+.sts4-cache/
+
+# NetBeans
+nbproject/private/
+nbbuild/
+nbdist/
+.nb-gradle/
+build/
+
+# OS files
+.DS_Store
+.DS_Store?
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Temp files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Crash dumps
+hs_err_pid*
+replay_pid*
+
+# Environment files
+.env
+.env.*
