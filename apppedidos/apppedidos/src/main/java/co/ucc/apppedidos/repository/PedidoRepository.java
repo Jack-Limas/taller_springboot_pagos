@@ -1,37 +1,27 @@
 package co.ucc.apppedidos.repository;
 
 import co.ucc.apppedidos.model.Pedido;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Repository
-public class PedidoRepository {
+public interface PedidoRepository extends JpaRepository<Pedido, Long> {
 
-    private final List<Pedido> pedidos = new ArrayList<>();
-
-    public List<Pedido> listar() {
-        return new ArrayList<>(pedidos);
+    default List<Pedido> listar() {
+        return findAll();
     }
 
-    public Pedido guardar(Pedido pedido) {
-        if (pedido.getIdPedido() != null) {
-            eliminar(pedido.getIdPedido());
-        }
-        pedidos.add(pedido);
-        return pedido;
+    default Pedido guardar(Pedido pedido) {
+        return save(pedido);
     }
 
-    public Pedido buscarPorId(Long idPedido) {
-        return pedidos.stream()
-                .filter(pedido -> Objects.equals(pedido.getIdPedido(), idPedido))
-                .findFirst()
-                .orElse(null);
+    default Pedido buscarPorId(Long idPedido) {
+        return findById(idPedido).orElse(null);
     }
 
-    public void eliminar(Long idPedido) {
-        pedidos.removeIf(pedido -> Objects.equals(pedido.getIdPedido(), idPedido));
+    default void eliminar(Long idPedido) {
+        deleteById(idPedido);
     }
 }

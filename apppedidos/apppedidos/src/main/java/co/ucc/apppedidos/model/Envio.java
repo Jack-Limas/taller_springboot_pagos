@@ -2,6 +2,18 @@ package co.ucc.apppedidos.model;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.DiscriminatorType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 import java.util.Date;
 
@@ -12,13 +24,27 @@ import java.util.Date;
         @JsonSubTypes.Type(value = EnvioInternacional.class, name = "INTERNACIONAL"),
         @JsonSubTypes.Type(value = EnvioDron.class, name = "DRON")
 })
+@Entity
+@Table(name = "envios")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "tipo_envio", discriminatorType = DiscriminatorType.STRING)
 public abstract class Envio {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idEnvio;
+
     private Date fechaEnvio;
     private String estado;
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "id_pedido", nullable = false)
     private Pedido pedido;
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "id_distribuidor", nullable = false)
     private Distribuidor distribuidor;
+
     private String codigoRastreo;
     private double peso;
     private double volumen;

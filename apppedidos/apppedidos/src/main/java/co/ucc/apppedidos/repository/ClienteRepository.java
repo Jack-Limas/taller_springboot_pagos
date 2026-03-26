@@ -1,37 +1,27 @@
 package co.ucc.apppedidos.repository;
 
 import co.ucc.apppedidos.model.Cliente;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Repository
-public class ClienteRepository {
+public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
-    private final List<Cliente> clientes = new ArrayList<>();
-
-    public List<Cliente> listar() {
-        return new ArrayList<>(clientes);
+    default List<Cliente> listar() {
+        return findAll();
     }
 
-    public Cliente guardar(Cliente cliente) {
-        if (cliente.getIdCliente() != null) {
-            eliminar(cliente.getIdCliente());
-        }
-        clientes.add(cliente);
-        return cliente;
+    default Cliente guardar(Cliente cliente) {
+        return save(cliente);
     }
 
-    public Cliente buscarPorId(Long idCliente) {
-        return clientes.stream()
-                .filter(cliente -> Objects.equals(cliente.getIdCliente(), idCliente))
-                .findFirst()
-                .orElse(null);
+    default Cliente buscarPorId(Long idCliente) {
+        return findById(idCliente).orElse(null);
     }
 
-    public void eliminar(Long idCliente) {
-        clientes.removeIf(cliente -> Objects.equals(cliente.getIdCliente(), idCliente));
+    default void eliminar(Long idCliente) {
+        deleteById(idCliente);
     }
 }

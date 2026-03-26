@@ -1,37 +1,27 @@
 package co.ucc.apppedidos.repository;
 
 import co.ucc.apppedidos.model.Proveedor;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Repository
-public class ProveedorRepository {
+public interface ProveedorRepository extends JpaRepository<Proveedor, Long> {
 
-    private final List<Proveedor> proveedores = new ArrayList<>();
-
-    public List<Proveedor> listar() {
-        return new ArrayList<>(proveedores);
+    default List<Proveedor> listar() {
+        return findAll();
     }
 
-    public Proveedor guardar(Proveedor proveedor) {
-        if (proveedor.getIdProveedor() != null) {
-            eliminar(proveedor.getIdProveedor());
-        }
-        proveedores.add(proveedor);
-        return proveedor;
+    default Proveedor guardar(Proveedor proveedor) {
+        return save(proveedor);
     }
 
-    public Proveedor buscarPorId(Long idProveedor) {
-        return proveedores.stream()
-                .filter(proveedor -> Objects.equals(proveedor.getIdProveedor(), idProveedor))
-                .findFirst()
-                .orElse(null);
+    default Proveedor buscarPorId(Long idProveedor) {
+        return findById(idProveedor).orElse(null);
     }
 
-    public void eliminar(Long idProveedor) {
-        proveedores.removeIf(proveedor -> Objects.equals(proveedor.getIdProveedor(), idProveedor));
+    default void eliminar(Long idProveedor) {
+        deleteById(idProveedor);
     }
 }

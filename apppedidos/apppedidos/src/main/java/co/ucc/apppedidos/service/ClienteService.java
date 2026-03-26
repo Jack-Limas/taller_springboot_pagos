@@ -3,6 +3,7 @@ package co.ucc.apppedidos.service;
 import co.ucc.apppedidos.model.Cliente;
 import co.ucc.apppedidos.repository.ClienteRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,9 +20,10 @@ public class ClienteService {
         return clienteRepository.listar();
     }
 
+    @Transactional
     public Cliente crearCliente(Cliente cliente) {
-        if (cliente.getIdCliente() == null) {
-            throw new IllegalArgumentException("El cliente debe tener idCliente");
+        if (cliente.getNombre() == null || cliente.getNombre().isBlank()) {
+            throw new IllegalArgumentException("El cliente debe tener nombre");
         }
         return clienteRepository.guardar(cliente);
     }
@@ -34,6 +36,7 @@ public class ClienteService {
         return cliente;
     }
 
+    @Transactional
     public void eliminarCliente(Long idCliente) {
         buscarCliente(idCliente);
         clienteRepository.eliminar(idCliente);

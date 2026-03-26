@@ -1,40 +1,29 @@
 package co.ucc.apppedidos.repository;
 
 import co.ucc.apppedidos.model.Factura;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Repository
-public class FacturaRepository {
+public interface FacturaRepository extends JpaRepository<Factura, Long> {
 
-    private final List<Factura> facturas = new ArrayList<>();
+    Factura findFirstByPedido_IdPedido(Long idPedido);
 
-    public List<Factura> listar() {
-        return new ArrayList<>(facturas);
+    default List<Factura> listar() {
+        return findAll();
     }
 
-    public Factura guardar(Factura factura) {
-        if (factura.getIdFactura() != null) {
-            facturas.removeIf(actual -> Objects.equals(actual.getIdFactura(), factura.getIdFactura()));
-        }
-        facturas.add(factura);
-        return factura;
+    default Factura guardar(Factura factura) {
+        return save(factura);
     }
 
-    public Factura buscarPorId(Long idFactura) {
-        return facturas.stream()
-                .filter(factura -> Objects.equals(factura.getIdFactura(), idFactura))
-                .findFirst()
-                .orElse(null);
+    default Factura buscarPorId(Long idFactura) {
+        return findById(idFactura).orElse(null);
     }
 
-    public Factura buscarPorPedido(Long idPedido) {
-        return facturas.stream()
-                .filter(factura -> factura.getPedido() != null && Objects.equals(factura.getPedido().getIdPedido(), idPedido))
-                .findFirst()
-                .orElse(null);
+    default Factura buscarPorPedido(Long idPedido) {
+        return findFirstByPedido_IdPedido(idPedido);
     }
 }

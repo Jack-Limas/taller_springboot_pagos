@@ -1,17 +1,36 @@
 package co.ucc.apppedidos.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "detalle_pedidos")
 public class DetallePedido {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_detalle")
     private Long idDetalle;
-    private int cantidad;
-    private double precioUnitario;
-    private double subtotal;
+
+    private Integer cantidad;
+    private Double precioUnitario;
+    private Double subtotal;
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "id_producto", nullable = false)
     private Producto producto;
 
     public DetallePedido() {
     }
 
-    public DetallePedido(Long idDetalle, int cantidad, double precioUnitario, double subtotal, Producto producto) {
+    public DetallePedido(Long idDetalle, Integer cantidad, Double precioUnitario, Double subtotal, Producto producto) {
         this.idDetalle = idDetalle;
         this.cantidad = cantidad;
         this.precioUnitario = precioUnitario;
@@ -27,27 +46,27 @@ public class DetallePedido {
         this.idDetalle = idDetalle;
     }
 
-    public int getCantidad() {
+    public Integer getCantidad() {
         return cantidad;
     }
 
-    public void setCantidad(int cantidad) {
+    public void setCantidad(Integer cantidad) {
         this.cantidad = cantidad;
     }
 
-    public double getPrecioUnitario() {
+    public Double getPrecioUnitario() {
         return precioUnitario;
     }
 
-    public void setPrecioUnitario(double precioUnitario) {
+    public void setPrecioUnitario(Double precioUnitario) {
         this.precioUnitario = precioUnitario;
     }
 
-    public double getSubtotal() {
+    public Double getSubtotal() {
         return subtotal;
     }
 
-    public void setSubtotal(double subtotal) {
+    public void setSubtotal(Double subtotal) {
         this.subtotal = subtotal;
     }
 

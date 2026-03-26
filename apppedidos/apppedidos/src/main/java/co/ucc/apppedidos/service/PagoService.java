@@ -4,6 +4,7 @@ import co.ucc.apppedidos.model.Pago;
 import co.ucc.apppedidos.model.Pedido;
 import co.ucc.apppedidos.repository.PagoRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -24,9 +25,10 @@ public class PagoService {
         this.pedidoService = pedidoService;
     }
 
+    @Transactional
     public Pago realizarPago(Pago pago) {
-        if (pago.getIdPago() == null) {
-            throw new IllegalArgumentException("El pago debe tener idPago");
+        if (pago.getPedido() == null || pago.getPedido().getIdPedido() == null) {
+            throw new IllegalArgumentException("El pago debe referenciar un pedido");
         }
         Pedido pedido = pedidoService.buscarPedido(pago.getPedido().getIdPedido());
 
@@ -39,6 +41,7 @@ public class PagoService {
         return pagoRepository.guardar(pago);
     }
 
+    @Transactional
     public void realizarReembolso(Long idPago) {
         Pago pago = buscarPago(idPago);
         pago.setEstado("REEMBOLSADO");
@@ -47,6 +50,7 @@ public class PagoService {
         pagoRepository.guardar(pago);
     }
 
+    @Transactional(readOnly = true)
     public Pago buscarPago(Long idPago) {
         Pago pago = pagoRepository.buscarPorId(idPago);
         if (pago == null) {
@@ -58,6 +62,7 @@ public class PagoService {
         return pago;
     }
 
+    @Transactional(readOnly = true)
     public List<Pago> listarPagos() {
         return pagoRepository.listar();
     }

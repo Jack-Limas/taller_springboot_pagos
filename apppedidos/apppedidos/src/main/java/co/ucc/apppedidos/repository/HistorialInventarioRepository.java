@@ -1,41 +1,29 @@
 package co.ucc.apppedidos.repository;
 
 import co.ucc.apppedidos.model.HistorialInventario;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Repository
-public class HistorialInventarioRepository {
+public interface HistorialInventarioRepository extends JpaRepository<HistorialInventario, Long> {
 
-    private final List<HistorialInventario> movimientos = new ArrayList<>();
+    List<HistorialInventario> findByProducto_IdProducto(Long idProducto);
 
-    public List<HistorialInventario> listar() {
-        return new ArrayList<>(movimientos);
+    default List<HistorialInventario> listar() {
+        return findAll();
     }
 
-    public HistorialInventario guardar(HistorialInventario historialInventario) {
-        if (historialInventario.getIdMovimiento() != null) {
-            movimientos.removeIf(actual -> Objects.equals(actual.getIdMovimiento(), historialInventario.getIdMovimiento()));
-        }
-        movimientos.add(historialInventario);
-        return historialInventario;
+    default HistorialInventario guardar(HistorialInventario historialInventario) {
+        return save(historialInventario);
     }
 
-    public HistorialInventario buscarPorId(Long idMovimiento) {
-        return movimientos.stream()
-                .filter(movimiento -> Objects.equals(movimiento.getIdMovimiento(), idMovimiento))
-                .findFirst()
-                .orElse(null);
+    default HistorialInventario buscarPorId(Long idMovimiento) {
+        return findById(idMovimiento).orElse(null);
     }
 
-    public List<HistorialInventario> buscarPorProducto(Long idProducto) {
-        return movimientos.stream()
-                .filter(movimiento -> movimiento.getProducto() != null
-                        && Objects.equals(movimiento.getProducto().getIdProducto(), idProducto))
-                .collect(Collectors.toList());
+    default List<HistorialInventario> buscarPorProducto(Long idProducto) {
+        return findByProducto_IdProducto(idProducto);
     }
 }

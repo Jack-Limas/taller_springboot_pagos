@@ -6,6 +6,7 @@ import co.ucc.apppedidos.model.Factura;
 import co.ucc.apppedidos.model.Pedido;
 import co.ucc.apppedidos.repository.FacturaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,22 +23,22 @@ public class FacturaService {
         this.pedidoService = pedidoService;
     }
 
+    @Transactional(readOnly = true)
     public List<Factura> listarFacturas() {
         return facturaRepository.listar();
     }
 
+    @Transactional
     public Factura generarFactura(Pedido pedido) {
         Pedido pedidoPersistido = pedidoService.buscarPedido(pedido.getIdPedido());
 
         Factura factura = new Factura();
-        factura.setIdFactura((long) facturaRepository.listar().size() + 1);
         factura.setFecha(new Date());
         factura.setPedido(pedidoPersistido);
 
         List<DetalleFactura> detallesFactura = new ArrayList<>();
         for (DetallePedido detallePedido : pedidoPersistido.getDetalles()) {
             DetalleFactura detalleFactura = new DetalleFactura();
-            detalleFactura.setIdDetalleFactura((long) detallesFactura.size() + 1);
             detalleFactura.setCantidad(detallePedido.getCantidad());
             detalleFactura.setPrecioUnitario(detallePedido.getPrecioUnitario());
             detalleFactura.setSubtotal(detallePedido.getSubtotal());
@@ -50,6 +51,7 @@ public class FacturaService {
         return facturaRepository.guardar(factura);
     }
 
+    @Transactional(readOnly = true)
     public Factura buscarFactura(Long idFactura) {
         Factura factura = facturaRepository.buscarPorId(idFactura);
         if (factura == null) {

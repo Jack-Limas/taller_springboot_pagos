@@ -1,16 +1,31 @@
 package co.ucc.apppedidos.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "productos")
 public class Producto {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_producto")
     private Long idProducto;
+
+    @Column(nullable = false)
     private String nombre;
-    private double precio;
-    private int stock;
+
+    private Double precio;
+    private Integer stock;
 
     public Producto() {
     }
 
-    public Producto(Long idProducto, String nombre, double precio, int stock) {
+    public Producto(Long idProducto, String nombre, Double precio, Integer stock) {
         this.idProducto = idProducto;
         this.nombre = nombre;
         this.precio = precio;
@@ -33,19 +48,19 @@ public class Producto {
         this.nombre = nombre;
     }
 
-    public double getPrecio() {
+    public Double getPrecio() {
         return precio;
     }
 
-    public void setPrecio(double precio) {
+    public void setPrecio(Double precio) {
         this.precio = precio;
     }
 
-    public int getStock() {
+    public Integer getStock() {
         return stock;
     }
 
-    public void setStock(int stock) {
+    public void setStock(Integer stock) {
         this.stock = stock;
     }
 }

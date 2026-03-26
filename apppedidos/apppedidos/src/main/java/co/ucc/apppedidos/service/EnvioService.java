@@ -6,6 +6,7 @@ import co.ucc.apppedidos.model.Pedido;
 import co.ucc.apppedidos.repository.DistribuidorRepository;
 import co.ucc.apppedidos.repository.EnvioRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -29,13 +30,18 @@ public class EnvioService {
         this.pedidoService = pedidoService;
     }
 
+    @Transactional(readOnly = true)
     public List<Envio> listarEnvios() {
         return envioRepository.listar();
     }
 
+    @Transactional
     public Envio registrarEnvio(Envio envio) {
-        if (envio.getIdEnvio() == null) {
-            throw new IllegalArgumentException("El envio debe tener idEnvio");
+        if (envio.getPedido() == null || envio.getPedido().getIdPedido() == null) {
+            throw new IllegalArgumentException("El envio debe referenciar un pedido");
+        }
+        if (envio.getDistribuidor() == null || envio.getDistribuidor().getIdDistribuidor() == null) {
+            throw new IllegalArgumentException("El envio debe referenciar un distribuidor");
         }
         Pedido pedido = pedidoService.buscarPedido(envio.getPedido().getIdPedido());
         Distribuidor distribuidor = buscarDistribuidor(envio.getDistribuidor().getIdDistribuidor());
@@ -47,6 +53,7 @@ public class EnvioService {
         return envioRepository.guardar(envio);
     }
 
+    @Transactional(readOnly = true)
     public Envio buscarEnvio(Long idEnvio) {
         Envio envio = envioRepository.buscarPorId(idEnvio);
         if (envio == null) {
@@ -55,6 +62,7 @@ public class EnvioService {
         return envio;
     }
 
+    @Transactional
     public void despacharEnvio(Long idEnvio) {
         Envio envio = buscarEnvio(idEnvio);
         envio.setEstado("DESPACHADO");
@@ -62,6 +70,7 @@ public class EnvioService {
         envioRepository.guardar(envio);
     }
 
+    @Transactional
     public void entregarEnvio(Long idEnvio) {
         Envio envio = buscarEnvio(idEnvio);
         envio.setEstado("ENTREGADO");
@@ -69,13 +78,15 @@ public class EnvioService {
         envioRepository.guardar(envio);
     }
 
+    @Transactional(readOnly = true)
     public List<Distribuidor> listarDistribuidores() {
         return distribuidorRepository.listar();
     }
 
+    @Transactional
     public Distribuidor guardarDistribuidor(Distribuidor distribuidor) {
-        if (distribuidor.getIdDistribuidor() == null) {
-            throw new IllegalArgumentException("El distribuidor debe tener idDistribuidor");
+        if (distribuidor.getNombre() == null || distribuidor.getNombre().isBlank()) {
+            throw new IllegalArgumentException("El distribuidor debe tener nombre");
         }
         if (!TIPOS_DISTRIBUIDOR_VALIDOS.contains(distribuidor.getTipo())) {
             throw new IllegalArgumentException("Tipo de distribuidor invalido: " + distribuidor.getTipo());

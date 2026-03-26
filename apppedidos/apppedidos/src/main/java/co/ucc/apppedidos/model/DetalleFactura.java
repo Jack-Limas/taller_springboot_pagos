@@ -1,11 +1,30 @@
 package co.ucc.apppedidos.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "detalle_facturas")
 public class DetalleFactura {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_detalle_factura")
     private Long idDetalleFactura;
+
     private int cantidad;
     private double precioUnitario;
     private double subtotal;
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "id_producto", nullable = false)
     private Producto producto;
 
     public DetalleFactura() {

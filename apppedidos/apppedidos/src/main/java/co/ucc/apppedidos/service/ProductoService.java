@@ -7,6 +7,7 @@ import co.ucc.apppedidos.repository.HistorialInventarioRepository;
 import co.ucc.apppedidos.repository.ProductoRepository;
 import co.ucc.apppedidos.repository.ProveedorRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -29,13 +30,15 @@ public class ProductoService {
         this.proveedorRepository = proveedorRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<Producto> listarProductos() {
         return productoRepository.listar();
     }
 
+    @Transactional
     public Producto crearProducto(Producto producto) {
-        if (producto.getIdProducto() == null) {
-            throw new IllegalArgumentException("El producto debe tener idProducto");
+        if (producto.getNombre() == null || producto.getNombre().isBlank()) {
+            throw new IllegalArgumentException("El producto debe tener nombre");
         }
         return productoRepository.guardar(producto);
     }
@@ -48,6 +51,7 @@ public class ProductoService {
         return producto;
     }
 
+    @Transactional
     public void actualizarStock(Long idProducto, int cantidad, String tipo) {
         if (!TIPOS_MOVIMIENTO_VALIDOS.contains(tipo)) {
             throw new IllegalArgumentException("Tipo de movimiento invalido: " + tipo);
@@ -55,21 +59,21 @@ public class ProductoService {
 
         Producto producto = buscarProducto(idProducto);
         int nuevoStock;
+        int stockActual = producto.getStock() == null ? 0 : producto.getStock();
 
         if ("SALIDA".equals(tipo)) {
-            nuevoStock = producto.getStock() - cantidad;
+            nuevoStock = stockActual - cantidad;
             if (nuevoStock < 0) {
                 throw new IllegalArgumentException("Stock insuficiente para el producto " + idProducto);
             }
         } else {
-            nuevoStock = producto.getStock() + cantidad;
+            nuevoStock = stockActual + cantidad;
         }
 
         producto.setStock(nuevoStock);
         productoRepository.guardar(producto);
 
         HistorialInventario movimiento = new HistorialInventario();
-        movimiento.setIdMovimiento((long) historialInventarioRepository.listar().size() + 1);
         movimiento.setFechaMovimiento(new Date());
         movimiento.setProducto(producto);
         movimiento.setCantidad(cantidad);
@@ -78,22 +82,27 @@ public class ProductoService {
         historialInventarioRepository.guardar(movimiento);
     }
 
+    @Transactional(readOnly = true)
     public int consultarStock(Long idProducto) {
-        return buscarProducto(idProducto).getStock();
+        Integer stock = buscarProducto(idProducto).getStock();
+        return stock == null ? 0 : stock;
     }
 
+    @Transactional(readOnly = true)
     public List<HistorialInventario> listarHistorial(Long idProducto) {
         buscarProducto(idProducto);
         return historialInventarioRepository.buscarPorProducto(idProducto);
     }
 
+    @Transactional(readOnly = true)
     public List<Proveedor> listarProveedores() {
         return proveedorRepository.listar();
     }
 
+    @Transactional
     public Proveedor guardarProveedor(Proveedor proveedor) {
-        if (proveedor.getIdProveedor() == null) {
-            throw new IllegalArgumentException("El proveedor debe tener idProveedor");
+        if (proveedor.getNombre() == null || proveedor.getNombre().isBlank()) {
+            throw new IllegalArgumentException("El proveedor debe tener nombre");
         }
         return proveedorRepository.guardar(proveedor);
     }

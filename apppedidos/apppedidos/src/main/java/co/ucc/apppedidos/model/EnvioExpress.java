@@ -1,7 +1,12 @@
 package co.ucc.apppedidos.model;
 
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+
 import java.util.Date;
 
+@Entity
+@DiscriminatorValue("EXPRESS")
 public class EnvioExpress extends Envio {
 
     public EnvioExpress() {

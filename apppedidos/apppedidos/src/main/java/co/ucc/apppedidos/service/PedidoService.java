@@ -3,9 +3,10 @@ package co.ucc.apppedidos.service;
 import co.ucc.apppedidos.model.DetallePedido;
 import co.ucc.apppedidos.model.Pedido;
 import co.ucc.apppedidos.model.Producto;
-import co.ucc.apppedidos.repository.DetallePedidoRepository;
+import co.ucc.apppedidos.repository.ClienteRepository;
 import co.ucc.apppedidos.repository.PedidoRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,27 +20,31 @@ public class PedidoService {
             Set.of("PENDIENTE", "EN_PROCESO", "ENVIADO", "ENTREGADO", "CANCELADO");
 
     private final PedidoRepository pedidoRepository;
-    private final DetallePedidoRepository detallePedidoRepository;
+    private final ClienteRepository clienteRepository;
     private final ProductoService productoService;
 
     public PedidoService(PedidoRepository pedidoRepository,
-                         DetallePedidoRepository detallePedidoRepository,
+                         ClienteRepository clienteRepository,
                          ProductoService productoService) {
         this.pedidoRepository = pedidoRepository;
-        this.detallePedidoRepository = detallePedidoRepository;
+        this.clienteRepository = clienteRepository;
         this.productoService = productoService;
     }
 
+    @Transactional(readOnly = true)
     public List<Pedido> listarPedidos() {
         return pedidoRepository.listar();
     }
 
+    @Transactional
     public Pedido registrarPedido(Pedido pedido) {
-        if (pedido.getIdPedido() == null) {
-            throw new IllegalArgumentException("El pedido debe tener idPedido");
-        }
         if (pedido.getDetalles() == null || pedido.getDetalles().isEmpty()) {
             throw new IllegalArgumentException("El pedido debe tener al menos un detalle");
+        }
+        if (pedido.getCliente() != null && pedido.getCliente().getIdCliente() != null) {
+            pedido.setCliente(clienteRepository.findById(pedido.getCliente().getIdCliente())
+                    .orElseThrow(() -> new IllegalArgumentException(
+                            "Cliente no encontrado: " + pedido.getCliente().getIdCliente())));
         }
 
         pedido.setFecha(pedido.getFecha() == null ? new Date() : pedido.getFecha());
@@ -50,14 +55,13 @@ public class PedidoService {
             if (detalle.getProducto() == null || detalle.getProducto().getIdProducto() == null) {
                 throw new IllegalArgumentException("Cada detalle debe referenciar un producto");
             }
-            if (detalle.getIdDetalle() == null) {
-                detalle.setIdDetalle((long) detallePedidoRepository.listar().size() + detallesNormalizados.size() + 1);
+            if (detalle.getCantidad() == null || detalle.getCantidad() <= 0) {
+                throw new IllegalArgumentException("Cada detalle debe tener una cantidad mayor a cero");
             }
             Producto producto = productoService.buscarProducto(detalle.getProducto().getIdProducto());
             detalle.setProducto(producto);
             detalle.setPrecioUnitario(producto.getPrecio());
             detalle.setSubtotal(detalle.getCantidad() * producto.getPrecio());
-            detallePedidoRepository.guardar(detalle);
             productoService.actualizarStock(producto.getIdProducto(), detalle.getCantidad(), "SALIDA");
             detallesNormalizados.add(detalle);
         }
@@ -67,6 +71,7 @@ public class PedidoService {
         return pedidoRepository.guardar(pedido);
     }
 
+    @Transactional(readOnly = true)
     public Pedido buscarPedido(Long idPedido) {
         Pedido pedido = pedidoRepository.buscarPorId(idPedido);
         if (pedido == null) {
@@ -75,6 +80,7 @@ public class PedidoService {
         return pedido;
     }
 
+    @Transactional
     public void cancelarPedido(Long idPedido) {
         Pedido pedido = buscarPedido(idPedido);
         pedido.setEstado("CANCELADO");

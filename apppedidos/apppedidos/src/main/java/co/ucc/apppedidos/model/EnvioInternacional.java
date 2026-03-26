@@ -1,7 +1,12 @@
 package co.ucc.apppedidos.model;
 
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+
 import java.util.Date;
 
+@Entity
+@DiscriminatorValue("INTERNACIONAL")
 public class EnvioInternacional extends Envio {
 
     public EnvioInternacional() {
