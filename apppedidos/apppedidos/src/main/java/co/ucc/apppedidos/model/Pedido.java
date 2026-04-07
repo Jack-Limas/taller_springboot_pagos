@@ -28,6 +28,7 @@ public class Pedido {
     private Date fecha;
     private Double total;
     private String estado;
+    private Double iva;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_cliente")
@@ -40,11 +41,12 @@ public class Pedido {
     public Pedido() {
     }
 
-    public Pedido(Long idPedido, Date fecha, Double total, String estado, Cliente cliente, List<DetallePedido> detalles) {
+    public Pedido(Long idPedido, Date fecha, Double total, String estado, Double iva, Cliente cliente, List<DetallePedido> detalles) {
         this.idPedido = idPedido;
         this.fecha = fecha;
         this.total = total;
         this.estado = estado;
+        this.iva = iva;
         this.cliente = cliente;
         this.detalles = detalles;
     }
@@ -67,6 +69,13 @@ public class Pedido {
 
     public Double getTotal() {
         return total;
+    }
+    public Double getIva() {
+        return iva;
+    }
+
+    public void setIva(Double iva) {
+        this.iva = iva;
     }
 
     public void setTotal(Double total) {
@@ -95,5 +104,12 @@ public class Pedido {
 
     public void setDetalles(List<DetallePedido> detalles) {
         this.detalles = detalles;
+    }
+
+    public Double getSubtotal() {
+        if (total == null) {
+            return null;
+        }
+        return total - (iva == null ? 0.0 : iva);
     }
 }

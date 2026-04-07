@@ -16,6 +16,8 @@ import java.util.Set;
 @Service
 public class PedidoService {
 
+    private static final double IVA = 1.19;
+
     private static final Set<String> ESTADOS_PEDIDO_VALIDOS =
             Set.of("PENDIENTE", "EN_PROCESO", "ENVIADO", "ENTREGADO", "CANCELADO");
 
@@ -67,7 +69,10 @@ public class PedidoService {
         }
 
         pedido.setDetalles(detallesNormalizados);
-        pedido.setTotal(calcularTotal(pedido));
+        double totalConIva = calcularTotal(pedido);
+        double subtotal = calcularSubtotal(totalConIva);
+        pedido.setTotal(totalConIva);
+        pedido.setIva(calcularValorIva(totalConIva, subtotal));
         return pedidoRepository.guardar(pedido);
     }
 
@@ -88,9 +93,10 @@ public class PedidoService {
     }
 
     public double calcularTotal(Pedido pedido) {
-        return pedido.getDetalles().stream()
+        double subtotal = pedido.getDetalles().stream()
                 .mapToDouble(DetallePedido::getSubtotal)
                 .sum();
+        return subtotal;
     }
 
     private String normalizarEstadoPedido(String estado) {
@@ -100,4 +106,13 @@ public class PedidoService {
         }
         return estadoNormalizado;
     }
+
+    private double calcularSubtotal(double totalConIva) {
+        return totalConIva / IVA;
+    }
+
+    private double calcularValorIva(double totalConIva, double subtotal) {
+        return totalConIva - subtotal;
+    }
+    
 }

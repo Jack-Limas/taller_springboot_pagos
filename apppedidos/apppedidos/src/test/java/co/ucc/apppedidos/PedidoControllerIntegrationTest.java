@@ -16,6 +16,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 class PedidoControllerIntegrationTest {
@@ -65,6 +66,9 @@ class PedidoControllerIntegrationTest {
         assertNotNull(respuesta);
         assertNotNull(respuesta.getIdPedido());
         assertEquals(190000.0, respuesta.getTotal());
+        assertEquals(190000.0 - (190000.0 / 1.19), respuesta.getIva());
+        assertEquals(190000.0 / 1.19, respuesta.getSubtotal());
+        assertTrue(respuesta.getIva() > 0);
         assertEquals(1, respuesta.getDetalles().size());
     }
 }
